@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday, Bestie! 🎂</title>
+  <meta name="description" content="A single-page birthday website with raining wishes, a poem, and our story." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-start: #10172a; /* slate-900 */
+      --bg-end: #1b2a4a;   /* indigo/dark blue */
+      --accent: #ffd166;   /* warm golden */
+      --accent-2: #c7f9cc; /* minty */
+      --text: #eef2ff;     /* soft white */
+      --muted: #cbd5e1;    /* slate-300 */
+      --card: rgba(255,255,255,0.08);
+      --glass: rgba(255,255,255,0.12);
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: linear-gradient(160deg, var(--bg-start), var(--bg-end));
+      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      overflow-x: hidden;
+    }
+
+    /* Raining wishes layer */
+    #rain {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .wish {
+      position: absolute;
+      top: -10vh;
+      left: var(--x, 50vw);
+      opacity: var(--o, 0.7);
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.35);
+      transform: translateY(-10vh) rotate(var(--r, 0deg));
+      animation: fall var(--d, 9s) var(--delay, 0s) linear forwards;
+      white-space: nowrap;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+    }
+    .wish .emoji { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.25)); }
+
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(calc(var(--r, 0deg) + 180deg)); }
+    }
+
+    header {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 1.5rem 2rem;
+      text-align: center;
+    }
+
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 800;
+      font-size: clamp(2.2rem, 4vw + 1rem, 4.2rem);
+      line-height: 1.1;
+      margin: 0 0 0.5rem;
+      letter-spacing: 0.4px;
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      margin: 0 auto;
+      max-width: 60ch;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .controls {
+      margin: 1.25rem auto 0;
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button.cta {
+      background: radial-gradient(120% 120% at 50% 0%, var(--accent) 0%, #ff7d7d 50%, #ff5d9e 100%);
+      color: #2b2b2b;
+      border: 0;
+      border-radius: 999px;
+      padding: 0.9rem 1.2rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform .12s ease, filter .2s ease;
+    }
+    button.cta:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    button.alt {
+      background: var(--glass);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 999px;
+      padding: 0.85rem 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: clamp(1rem, 3vw, 2rem);
+      padding: 1rem clamp(1rem, 4vw, 2rem) 4rem;
+      align-items: start;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      grid-column: 1 / -1;
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      padding: clamp(1rem, 4vw, 2rem);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .card h2 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.5rem, 2.2vw + 0.6rem, 2.4rem);
+      font-weight: 800;
+    }
+    .card p { color: #e8ecff; }
+
+    .poem {
+      grid-column: span 7;
+    }
+    .story {
+      grid-column: span 5;
+    }
+
+    .poem p { line-height: 1.7; font-size: 1.05rem; }
+    .story p { line-height: 1.8; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .5rem .85rem; border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: .9rem; color: var(--text);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem 1rem 4rem;
+      position: relative; z-index: 1;
+    }
+
+    .sparkle {
+      background: conic-gradient(from 0deg at 50% 50%, var(--accent), var(--accent-2), #b8c0ff, #ffafcc, var(--accent));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-shadow: 0 0 24px rgba(255,255,255,0.2);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .poem { grid-column: 1 / -1; }
+      .story { grid-column: 1 / -1; }
+    }
+
+    /* Print styles (optional keepsake) */
+    @media print {
+      #rain, .controls { display: none !important; }
+      body { background: white; color: #111; }
+      .card { background: white; border: 1px solid #ddd; box-shadow: none; }
+      a { color: #111; }
+    }
+  </style>
+</head>
+<body>
+  <div id="rain" aria-hidden="true"></div>
+
+  <header>
+    <div class="badge" aria-live="polite" id="greetingBadge">🎉 Celebrating <span id="nameSlot">Bestie</span> 18 and something Today!</div>
+    <h1 class="title">Happy Birthday, <span class="sparkle" id="nameTitle">Bestie</span>! 🎂🎈</h1>
+    <p class="subtitle">From the very first time I saw you—fearless in a comment thread—to today, you’ve been the brightest, bravest friend I could ask for. Here’s a little poem and our story, wrapped in rainshowers of wishes. 💛</p>
+    <div class="controls">
+      <button class="cta" id="toggleRain">Make it Rain ✨</button>
+      <button class="alt" id="pauseRain" aria-pressed="false">Pause Rain ▣</button>
+      <!-- <button class="alt" id="personalize">Personalize Name ✏️</button> -->
+    </div>
+  </header>
+
+  <main>
+    <section class="card poem" aria-labelledby="poem-title">
+      <h2 id="poem-title">A Birthday Poem for You</h2>
+      <p>
+        Today the sky writes your name in confetti,<br/>
+        and even the shy sun peeks out to stare.<br/>
+        Laughter drifts like music down the hallway of the year—<br/>
+        every step you’ve taken, a bright, brave flare.
+      </p>
+      <p>
+        You, the storm that defends what matters,<br/>
+        the calm that stitches a shaken heart;<br/>
+        you turn small moments into galaxies,<br/>
+        and ordinary days into living art.
+      </p>
+      <p>
+        May wishes fall soft as summer rain—<br/>
+        sweet as cake, warm as whispered cheers.<br/>
+        May joy find you, again and again,<br/>
+        lighting the candles of all your years.
+      </p>
+    </section>
+
+    <section class="card story" aria-labelledby="story-title">
+      <h2 id="story-title">Our Story</h2>
+      <p>
+        We met at university, in the wildest way: I first saw you while you were locked in a comment debate—
+        fierce, funny, fearless. You weren’t arguing for the sake of winning; you were standing up for our nation.
+      </p>
+      <p>
+        That moment told me everything. I thought, <em>there’s a heart worth knowing</em>. The next time we crossed paths, I said hello; you laughed, rolled your eyes about the “comment chaos,” and somehow that laugh opened a door.
+      </p>
+      <p>
+        Since then, you has always been a great friend whom i can trust, a friend who can always cheer me up and friend who knows me better than anyone else.
+      </p>
+      <p>
+        So here’s to the girl I first saw in a storm—
+        and the friend who became my calm. Happy birthday saathi. I’m so lucky our paths collided in that thread and never untangled. And, i will always wish you will get everything you have desired and more.
+      </p>
+    </section>
+  </main>
+
+  <div class="footer">
+    Made with 💛 and too much cake. — <span id="signature">Your saathi</span>
+  </div>
+
+  <script>
+    // ------- Personalization -------
+    const qs = new URLSearchParams(location.search);
+    const friendName = qs.get('name') || 'Bestie';
+    const signature = qs.get('from') || 'Your friend';
+    const nameSlot = document.getElementById('nameSlot');
+    const nameTitle = document.getElementById('nameTitle');
+    const signatureEl = document.getElementById('signature');
+    nameSlot.textContent = friendName;
+    nameTitle.textContent = friendName;
+    signatureEl.textContent = signature;
+
+    // document.getElementById('personalize').addEventListener('click', () => {
+    //   const n = prompt('Friend\'s name?', friendName) || friendName;
+    //   const f = prompt('From (your name)?', signature) || signature;
+    //   nameSlot.textContent = n; nameTitle.textContent = n; signatureEl.textContent = f;
+    //   history.replaceState({}, '', `?name=${encodeURIComponent(n)}&from=${encodeURIComponent(f)}`);
+    //   // celebratory burst
+    //   burst(14);
+    // });
+
+    // ------- Raining Wishes -------
+    const rainLayer = document.getElementById('rain');
+    const toggleBtn = document.getElementById('toggleRain');
+    const pauseBtn = document.getElementById('pauseRain');
+
+    let raining = false;
+    let rainTimer = null;
+
+    const phrases = [
+      'Happy Birthday', 'Many Happy Returns', 'Shine On', 'Make a Wish',
+      '🎉', '🎈', '🎂', '💖', '💫', '✨',
+      'Feliz cumpleaños', 'Joyeux anniversaire', 'Alles Gute', 'Buon compleanno',
+      'HBD!', 'Stay Golden', 'You\'re Loved', 'Cheers!'
+    ];
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+
+    function spawnWish(isBurst = false) {
+      const el = document.createElement('span');
+      el.className = 'wish';
+      const text = phrases[Math.floor(Math.random() * phrases.length)];
+      el.innerHTML = /\p{Emoji}/u.test(text) ? `<span class="emoji">${text}</span>` : text + ' ' + friendName + '!';
+      const size = isBurst ? rand(16, 26) : rand(12, 22);
+      el.style.fontSize = size + 'px';
+      el.style.setProperty('--x', rand(0, 100) + 'vw');
+      el.style.setProperty('--o', rand(0.55, 0.95));
+      el.style.setProperty('--r', rand(-30, 30) + 'deg');
+      el.style.color = Math.random() < 0.33 ? 'var(--accent)' : (Math.random() < 0.5 ? 'var(--accent-2)' : '#ffffff');
+      const duration = rand(6, 12);
+      const delay = rand(0, 0.8);
+      el.style.setProperty('--d', duration + 's');
+      el.style.setProperty('--delay', delay + 's');
+      el.addEventListener('animationend', () => el.remove());
+      rainLayer.appendChild(el);
+    }
+
+    function startRain() {
+      if (raining) return;
+      raining = true;
+      toggleBtn.textContent = 'Let it Rain More ✨';
+      rainTimer = setInterval(() => spawnWish(), 180);
+      // prime the sky
+      for (let i = 0; i < 18; i++) spawnWish();
+    }
+
+    function stopRain() {
+      raining = false;
+      toggleBtn.textContent = 'Make it Rain ✨';
+      if (rainTimer) { clearInterval(rainTimer); rainTimer = null; }
+    }
+
+    function burst(n = 10) {
+      for (let i = 0; i < n; i++) setTimeout(() => spawnWish(true), i * 50);
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      if (!raining) startRain(); else burst(20);
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      const pressed = pauseBtn.getAttribute('aria-pressed') === 'true';
+      pauseBtn.setAttribute('aria-pressed', String(!pressed));
+      if (!pressed) {
+        rainLayer.style.animationPlayState = 'paused';
+        [...rainLayer.children].forEach(ch => ch.style.animationPlayState = 'paused');
+        stopRain();
+        pauseBtn.textContent = 'Resume Rain ▶';
+      } else {
+        [...rainLayer.children].forEach(ch => ch.style.animationPlayState = 'running');
+        startRain();
+        pauseBtn.textContent = 'Pause Rain ▣';
+      }
+    });
+
+    // Auto-start a gentle drizzle
+    startRain();
+  </script>
+</body>
+</html>
